@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Easy Task</title>
+        <link rel="stylesheet", href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add_task" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=label" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=priority_high" />
+    </head>
+    <body>
+        <section class="header">
+            <nav>
+                <img src="task.png"><label>To Do</label>
+                <div class="nav-bar" id="navbar">
+                    <ul>
+                        <li><button onclick="showAddWidget()">Hinzufügen</button></li>
+                        <li><button >Löschen</button></li>
+                        <li><label>Liste 1</label></li>
+                        <li><button>Weiter</button></li>
+                        <li><button>Zurück</button></li>
+                    </ul>
+                </div>
+            </nav>
+        </section>
+        <section class="main">
+            <div class="listbox">
+            <li><button>Hinzufügen</button></li>
+        </div>
+        <div class="tasks">
+            <ul id="task-list">
+                
+            </ul>
+        </div>
+        </section>
+
+        <div id="overlay">
+            <div id="text-box">
+                <h1>Neue Aufgabe hinzufügen</h1>
+                <form action="">
+                    <input type="text" placeholder="Name" id="task-input"required><br>
+                    <select name="List" id="List"  required>
+                        <option value="Dringend">Dringend</option>
+                        <option value="Wichtig">Wichtig</option>
+                        <option value="Mittel">Mittel</option>
+                        <option value="Niedrig">Niedrig</option>
+                    </select>
+                    <input type="date" name="date" id="date">
+                    <input type="checkbox" name="daterequiered">Frist einstellen</input>
+                </form>
+                <button id="add-task-btn">Hinzufügen</button>
+                <button onclick="hideAddWidget()">Abbrechen</button>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
