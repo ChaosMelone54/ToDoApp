@@ -8,11 +8,6 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playpen+Sans:wght@100..800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add_2" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=chevron_backward" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=chevron_forward" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=edit" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete" />
     </head>
     <body>
         <div class="container">
@@ -32,16 +27,18 @@
                 <form action="" class="input-area">
                     <input type="text" placeholder="Add a new task ..." id="task-input">
                     <select name="priority" id="priority">
-                        <option value="Dringend">Dringend</option>
-                        <option value="Dringend">Wichtig</option>
-                        <option value="Dringend">Mittel</option>
-                        <option value="Dringend">Niedrig</option>
+                        <div class="selectionBox"><option value="Dringend">Dringend</option></div>
+                        <div class="selectionBox"><option value="Wichtig">Wichtig</option></div>
+                        <div class="selectionBox"><option value="Mittel">Mittel</option></div>
+                        <div class="selectionBox"><option value="Niedrig">Niedrig</option></div>
                     </select>
                     <input type="date" name="date" id="date">
-                    <button type="submit" id="addTaskBtn"><span class="material-symbols-outlined">add_2</span></button>
-                    <label id="morelist">Neue Liste</label>
-                    <button><span class="material-symbols-outlined">chevron_backward</span></button>
-                    <button><span class="material-symbols-outlined">chevron_forward</span></button>
+                    <button id="addTaskBtn"><img src="add_2_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
+                    <label id="morelist" onclick="showAddList()">Neue Liste</label>
+                    <button id="backwardbtn"><img src="chevron_backward_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
+                    <button id="Forwardbtn"><img src="chevron_forward_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
+                    <button id="ToogleDarkMode"><img src="dark_mode_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
+                    <button id="exportbtn"><img src="file_export_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
                 </form>
                 <div class="todos-container">
                     <ul id="task-list"></ul>
@@ -49,6 +46,20 @@
                 </div>
             </div>
         </div>
+         <div id="list">
+            <div class="listWidget">
+                <h1>Neue Liste hinzufügen</h1>
+                <form action="" class="list-input-area">
+                    <input type="text" placeholder="Namen eingeben" id="list-input">
+                </form>
+                <button id="addListBtn">Hinzufügen</button>
+                <button id="cancelListBtn" onclick="HideAddList()">Abbrechen</button>
+            </div>
+            <div class="test">
+                <ul id="list-container"></ul>
+            </div>
+        </div>
         <script src="script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
     </body>
 </html>
