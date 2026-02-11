@@ -27,10 +27,10 @@
                 <form action="" class="input-area">
                     <input type="text" placeholder="Add a new task ..." id="task-input">
                     <select name="priority" id="priority">
-                        <div class="selectionBox"><option value="Dringend">Dringend</option></div>
-                        <div class="selectionBox"><option value="Wichtig">Wichtig</option></div>
-                        <div class="selectionBox"><option value="Mittel">Mittel</option></div>
-                        <div class="selectionBox"><option value="Niedrig">Niedrig</option></div>
+                        <option value="Dringend">Dringend</option>
+                        <option value="Wichtig">Wichtig</option>
+                        <option value="Mittel">Mittel</option>
+                        <option value="Niedrig">Niedrig</option>
                     </select>
                     <input type="date" name="date" id="date">
                     <button id="addTaskBtn"><img src="add_2_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
@@ -38,10 +38,10 @@
                     <button id="backwardbtn"><img src="chevron_backward_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
                     <button id="Forwardbtn"><img src="chevron_forward_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
                     <button id="ToogleDarkMode"><img src="dark_mode_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
-                    <button id="exportbtn"><img src="file_export_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
+                    <button id="exportbtn" onclick="saveTaskToLocalStorage()"><img src="file_export_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
                 </form>
                 <div class="todos-container">
-                    <ul id="task-list"></ul>
+                    <table id="task-list"></table>
                     <img src="task.png" class="empty-image" alt="empty">
                 </div>
             </div>
@@ -59,7 +59,23 @@
                 <ul id="list-container"></ul>
             </div>
         </div>
+        <div id="export">
+            <div class="exportWidget">
+                <h1>To Do Liste exportieren</h1>
+                <form action="" id="export-input-area">
+                    <select name="" id="exportsettings">
+                        <option value="xls">xls</option>
+                        <option value="xlxs">xlxs</option>
+                        <option value="csv">csv</option>
+                    </select>
+                </form>
+                <button id="exportbtn">Export</button>
+                <button id="cancel" onclick="hideExportOptions()">Cancel</button>
+            </div>
+        </div>
         <script src="script.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     </body>
 </html>

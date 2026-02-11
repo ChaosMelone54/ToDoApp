@@ -83,37 +83,48 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const saveTaskToLocalStorage = () => {
-        const tasks = Array.from(taskList.querySelectorAll("li")).map(li => ({
-            text: li.querySelector("span").textContent,
-            completed: li.querySelector(".checkbox").checked,
-            
-    }));
-        localStorage.setItem("tasks", JSON.stringify(tasks));
+        const table = document.getElementById("task-list");
+        const rows = table.querySelectorAll("tr");
+        const tableData = [];
+
+        rows.forEach(row => {
+            const checkbox = row.querySelector(".checkbox")
+            const cells = row.querySelectorAll("td");
+            const rowData = {
+                task: cells[0].textContent,
+                prio: cells[1].textContent,
+                due: cells[2].textContent,
+                completed: checkbox.checked
+            };
+            tableData.push(rowData);
+        });
+        localStorage.setItem("savedTasks", JSON.stringify(tableData));
     }
 
     const loadTasksFromLocalStorage = () => {
-        const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        savedTasks.forEach(({ text, completed}) => addTask(text, completed, false));
-        document.getElementById("morelist").textContent = savedTasks.JSON.key;
-        toggleEmptyState();
-        updateProgress();
+        const savedData = JSON.parse(localStorage.getItem("savedTasks")) || [];
+        if(!savedData) {
+            return;
+        }
+
+        savedData.forEach(({task, prio, due, completed}) => addTask(task, prio, due, completed, false));
     }
 
-    const addTask = (text, completed = false) => {
-        const taskText = text || taskInput.value.trim();
-        const prioText = priorityInput.value.trim();
-        const dateText = dateInput.value.trim();
+    const addTask = (task, prio, due, completed = false) => {
+        const taskText = task || taskInput.value.trim();
+        const prioText = prio || priorityInput.value.trim();
+        const dateText = due || dateInput.value.trim();
         if(!taskText)
         {
             return;
         };
 
-        const li = document.createElement("li")
+        const li = document.createElement("tr")
         li.innerHTML = `
         <input type="checkbox" class="checkbox" ${completed ? 'checked' : ''}>
-        <span>${taskText}</span>
-        <p>${prioText}</p>
-        <p>${dateText}</p>
+        <td>${taskText}</td>
+        <td>${prioText}</td>
+        <td>${dateText}</td>
         <div class="task-buttons">
             <button class="edit-btn"><img src="edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
             <button class="delete-btn"><img src="delete_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"></button>
@@ -142,11 +153,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         editBtn.addEventListener("click", () => {
             if(!checkbox.checked) {
-                taskInput.value = li.querySelector('span').textContent;
+                taskInput.value = li.querySelector('td').textContent;
                 li.remove();
                 toggleEmptyState();
                 updateProgress(false);
-                saveTaskToLocalStorage();
+                
             }
         })
 
@@ -159,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         taskList.appendChild(li);
         taskInput.value = "";
+        document.getElementById("date").valueAsDate = new Date();
         toggleEmptyState();
         updateProgress();
         saveTaskToLocalStorage();
@@ -175,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    loadTasksFromLocalStorage();
+        loadTasksFromLocalStorage();
 })
 
 const Confetti = () => {
@@ -226,3 +238,51 @@ function showAddList() {
 function HideAddList() {
     document.getElementById("list").style.display = "none";
 }
+
+function exportTableAsCSV(filename) {
+    event.preventDefault();
+    const table = document.getElementById('task-list');
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = [], cols = rows[i].querySelectorAll("td");
+        for (let j = 0; j < cols.length; j++) {
+            row.push(cols[j].innerText);
+        }
+        csv.push(row.join(','));
+    }
+
+    // CSV-Datei erzeugen und herunterladen
+    const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+    const downloadLink = document.createElement('a');
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+function sortTable(table, column, asc = true) {
+    const dirModifier = asc ? 1 : -1;
+    const rows = Array.from(querySelectorAll("tr"));
+
+    const sortedRows = rows.sort((a, b) => {
+        const aColText = a.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
+        const bColText = b.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
+
+        while(table.firstChild) {
+            table.removeChild(table.firstChild);
+        };
+
+        table.append(...sortedRows);
+
+        table.querySelectorAll("td").forEach(td => td.classList.remove("td-sort-asc", "td-sort-desc"));
+        table.querySelector(``)
+
+        return aColText > bColText ? (1* dirModifier) : (-1* dirModifier);
+    });
+}
+
+sortTableByColumn(document.querySelector("table"), 1);
