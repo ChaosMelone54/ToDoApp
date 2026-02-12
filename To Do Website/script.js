@@ -19,21 +19,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const backwardBtn = document.getElementById("backwardbtn");
     const ViewName = document.getElementById("morelist");
     const moreOverlay = document.getElementById("more");
+    const deleteListBtn = document.getElementById("deletelist");
+
+    let listArray = [];
+
+    deleteListBtn.addEventListener("click", function() {
+        taskList.innerHTML = "";
+        moreOverlay.style.display = "none"
+        deleteListFromLocalStorage();
+        updateProgress();
+        toggleEmptyState();
+    })
 
     forwardBtn.addEventListener("click", function() {
         event.preventDefault();
-        var ul = document.getElementById("task-list");
-        while(ul.firstChild) {
-            ul.removeChild(ul.firstChild);
-        }
+        taskList.innerHTML = "";
+        getNextList();
+        updateProgress();
+        toggleEmptyState();
     });
 
     backwardBtn.addEventListener("click", function() {
         event.preventDefault();
-        var ul = document.getElementById("task-list");
-        while(ul.firstChild) {
-            ul.removeChild(ul.firstChild);
-        }
+        taskList.innerHTML = "";
+        getLastList();
+        updateProgress();
+        toggleEmptyState();
     });
 
     toggleDarkModeBtn.addEventListener("click", function() {
@@ -60,9 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
     table.innerHTML = "";
     nameLabel.innerHTML = name;
     document.getElementById("list").style.display = "none";
-
-    loadTasksFromLocalStorage(name);
+    listArray.push(name);
+    listInput.value = "";
+    saveListsToLocalStorage();
+    toggleEmptyState();
+    updateProgress();
     }
+
 
     listoverlay.addEventListener("click", function(e) {
         if(e.target === this) {
@@ -75,6 +90,67 @@ document.addEventListener("DOMContentLoaded", () => {
             this.style.display = "none";
         }
     })
+
+    const saveListsToLocalStorage = () => {
+        localStorage.setItem("lists", JSON.stringify(listArray));
+    }
+
+    const loadListsFromLocalStorage = () => {
+        listArray = JSON.parse(localStorage.getItem("lists"));
+        if(listArray.length === 0) {
+            createNewList(taskList, ViewName, "My Tasks");
+        }
+    }
+
+    const deleteListFromLocalStorage = () => {
+        let index = listArray.indexOf(ViewName.innerText);
+        var listTodelete = listArray[index];
+        if(index === -1) {
+            return;
+        }
+
+        listArray.splice(index, 1);
+        localStorage.removeItem(listTodelete);
+        var listname = listArray[0];
+        ViewName.innerHTML = listArray[0];
+        saveListsToLocalStorage();
+
+        if(listArray.length === 0) {
+            createNewList(taskList, ViewName, "My Tasks");
+        }
+
+        loadTasksFromLocalStorage(listname);
+    }
+
+    const getNextList = () => {
+        let index = listArray.indexOf(ViewName.innerText);
+        const maxlength = listArray.length;
+        if((index + 1) > (maxlength - 1)) {
+            var listname = listArray[0];
+            ViewName.innerHTML = listname;
+            loadTasksFromLocalStorage(listname);
+        }
+        else {
+            var listname = listArray[index + 1];
+            ViewName.innerHTML = listname;
+            loadTasksFromLocalStorage(listname);
+        }
+    }
+
+    const getLastList = () => {
+        let index = listArray.indexOf(ViewName.innerText);
+        const maxlength = listArray.length;
+        if((index - 1) < 0) {
+            var listname = listArray[maxlength - 1];
+            ViewName.innerHTML = listname;
+            loadTasksFromLocalStorage(listname);
+        }
+        else {
+            var listname = listArray[index -1];
+            ViewName.innerHTML = listname;
+            loadTasksFromLocalStorage(listname);
+        }
+    }
 
     const toggleEmptyState = () => {
         emptyImage.style.display = taskList.children.length === 0 ? 'block' : 'none';
@@ -197,6 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
             addTask();
         }
     });
+        loadListsFromLocalStorage();
         const file = ViewName.innerText;
         loadTasksFromLocalStorage(file);
         sortTableByColumn(document.querySelector("table"), 1, true)
@@ -301,4 +378,9 @@ function sortTableByColumn(table, column, asc = true) {
 function showMoreOptions() {
     event.preventDefault();
     document.getElementById("more").style.display = "flex";
+}
+
+function hideMoreOptions() {
+    event.preventDefault();
+    document.getElementById("more").style.display = "none";
 }

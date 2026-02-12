@@ -361,6 +361,8 @@ body{
 
 .optionwidget {
     position: block;
+    display: flex;
+    flex-direction: column;
     width: 30%;
     padding: 2rem;
     background: rgba(255, 194, 209, 0.3);
@@ -373,13 +375,17 @@ body{
     text-align: center;
 }
 
+.optionwidget h1{
+    margin-bottom: 1rem;
+}
+
 .optionwidget button {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-left: 10px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     padding: 8px;
     border-radius: 50px;
     width: 80%;
