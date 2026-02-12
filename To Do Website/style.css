@@ -346,3 +346,53 @@ body{
     background: rgba(255, 194, 209, 0.3);
     color: #fff;
 }
+
+#more {
+    display: flex;
+    position: fixed;
+    background-position: center;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.optionwidget {
+    position: block;
+    width: 30%;
+    padding: 2rem;
+    background: rgba(255, 194, 209, 0.3);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+    box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+}
+
+.optionwidget button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 8px;
+    border-radius: 50px;
+    width: 80%;
+    color: #fff;
+    font-size: 1.1rem;
+    background: rgba(255, 194, 209, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.optionwidget button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    background: #ff6f91;
+}

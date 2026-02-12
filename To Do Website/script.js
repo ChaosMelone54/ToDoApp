@@ -14,10 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const listoverlay = document.getElementById("list");
     const addListBtn = document.getElementById("addListBtn");
     const listInput = document.getElementById("list-input");
-    const listContainer = document.getElementById("list-container");
     const toggleDarkModeBtn = document.getElementById("ToogleDarkMode");
     const forwardBtn = document.getElementById("Forwardbtn");
     const backwardBtn = document.getElementById("backwardbtn");
+    const ViewName = document.getElementById("morelist");
+    const moreOverlay = document.getElementById("more");
 
     forwardBtn.addEventListener("click", function() {
         event.preventDefault();
@@ -40,27 +41,36 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.toggle("dark-mode");
     });
 
-    const addList = (event) => {
+    addListBtn.addEventListener("click", function() {
         const listName = listInput.value.trim();
-        if(!listName) {
-            return;
-        }
-        const li = document.createElement("li");
-        li.textContent = listName;
-        listContainer.appendChild(li);
-        listInput.value = "";
-    }
+        createNewList(taskList, ViewName, listName);
+    });
 
-    addListBtn.addEventListener("click", addList);
     listInput.addEventListener("keypress", (e) => {
         if(e.key === "Enter")
         {
             event.preventDefault();
-            addList(e);
+            const listName = listInput.value.trim();
+            createNewList(taskList, ViewName, listName);
+        }
+    });
+
+    function createNewList(table, nameLabel, name) {
+    event.preventDefault();
+    table.innerHTML = "";
+    nameLabel.innerHTML = name;
+    document.getElementById("list").style.display = "none";
+
+    loadTasksFromLocalStorage(name);
+    }
+
+    listoverlay.addEventListener("click", function(e) {
+        if(e.target === this) {
+            this.style.display = "none";
         }
     })
 
-    listoverlay.addEventListener("click", function(e) {
+    moreOverlay.addEventListener("click", function(e) {
         if(e.target === this) {
             this.style.display = "none";
         }
@@ -82,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     };
 
-    const saveTaskToLocalStorage = () => {
+    const saveTaskToLocalStorage = (filename) => {
         const table = document.getElementById("task-list");
         const rows = table.querySelectorAll("tr");
         const tableData = [];
@@ -98,11 +108,11 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             tableData.push(rowData);
         });
-        localStorage.setItem("savedTasks", JSON.stringify(tableData));
+        localStorage.setItem(filename, JSON.stringify(tableData));
     }
 
-    const loadTasksFromLocalStorage = () => {
-        const savedData = JSON.parse(localStorage.getItem("savedTasks")) || [];
+    const loadTasksFromLocalStorage = (filename) => {
+        const savedData = JSON.parse(localStorage.getItem(filename)) || [];
         if(!savedData) {
             return;
         }
@@ -114,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const taskText = task || taskInput.value.trim();
         const prioText = prio || priorityInput.value.trim();
         const dateText = due || dateInput.value.trim();
+        const file = ViewName.innerText;
         if(!taskText)
         {
             return;
@@ -148,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
             editBtn.style.opacity = isChecked ? '0.5' : '1';
             editBtn.style.pointerEvents = isChecked ? 'none' : 'auto';
             updateProgress();
-            saveTaskToLocalStorage();
+            saveTaskToLocalStorage(file);
         });
 
         editBtn.addEventListener("click", () => {
@@ -165,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
             li.remove();
             toggleEmptyState();
             updateProgress();
-            saveTaskToLocalStorage();
+            saveTaskToLocalStorage(file);
         });
 
         taskList.appendChild(li);
@@ -173,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("date").valueAsDate = new Date();
         toggleEmptyState();
         updateProgress();
-        saveTaskToLocalStorage();
+        saveTaskToLocalStorage(file);
     };
 
     addTaskBtn.addEventListener("click", () => {
@@ -186,8 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
             addTask();
         }
     });
-
-        loadTasksFromLocalStorage();
+        const file = ViewName.innerText;
+        loadTasksFromLocalStorage(file);
         sortTableByColumn(document.querySelector("table"), 1, true)
 })
 
@@ -271,8 +282,8 @@ function sortTableByColumn(table, column, asc = true) {
 
     //sort each row
     const sortedRows = rows.sort((a, b) => {
-        const aColText = a.querySelector(`td:nth-child(${column})`).textContent.trim();
-        const bColText = b.querySelector(`td:nth-child(${column})`).textContent.trim();
+        const aColText = a.querySelector(`td:nth-child(${column + 3})`).textContent.trim();
+        const bColText = b.querySelector(`td:nth-child(${column + 3})`).textContent.trim();
 
         return aColText > bColText ? (1* dirModifier) : (-1* dirModifier);
     });
@@ -285,7 +296,9 @@ function sortTableByColumn(table, column, asc = true) {
 
     //Re-add the sorted rows
     table.append(...sortedRows);
+}
 
-    // Remember how the coulums is currently sorted
-    table.querySelectorAll()
+function showMoreOptions() {
+    event.preventDefault();
+    document.getElementById("more").style.display = "flex";
 }
