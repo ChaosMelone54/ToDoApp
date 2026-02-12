@@ -188,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
         loadTasksFromLocalStorage();
+        sortTableByColumn(document.querySelector("table"), 1, true)
 })
 
 const Confetti = () => {
@@ -264,25 +265,27 @@ function exportTableAsCSV(filename) {
     document.body.removeChild(downloadLink);
 }
 
-function sortTable(table, column, asc = true) {
+function sortTableByColumn(table, column, asc = true) {
     const dirModifier = asc ? 1 : -1;
-    const rows = Array.from(querySelectorAll("tr"));
+    const rows = Array.from(table.querySelectorAll("tr"));
 
+    //sort each row
     const sortedRows = rows.sort((a, b) => {
-        const aColText = a.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
-        const bColText = b.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
-
-        while(table.firstChild) {
-            table.removeChild(table.firstChild);
-        };
-
-        table.append(...sortedRows);
-
-        table.querySelectorAll("td").forEach(td => td.classList.remove("td-sort-asc", "td-sort-desc"));
-        table.querySelector(``)
+        const aColText = a.querySelector(`td:nth-child(${column})`).textContent.trim();
+        const bColText = b.querySelector(`td:nth-child(${column})`).textContent.trim();
 
         return aColText > bColText ? (1* dirModifier) : (-1* dirModifier);
     });
-}
+    console.log(sortedRows);
 
-sortTableByColumn(document.querySelector("table"), 1);
+    // remove all existing trs from the table
+    while(table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
+
+    //Re-add the sorted rows
+    table.append(...sortedRows);
+
+    // Remember how the coulums is currently sorted
+    table.querySelectorAll()
+}
