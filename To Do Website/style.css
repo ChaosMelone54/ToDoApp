@@ -22,6 +22,7 @@ body{
     min-height: 100vh;
     background: var(--bg-color);
     background: var(--bg-linear-gradient);
+    overflow-x: hidden;
 }
 
 .container{
@@ -401,4 +402,87 @@ body{
     transform: scale(1.1);
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     background: #ff6f91;
+}
+
+@keyframes blink {
+  0%, 100% { background: rgba(255, 194, 209, 0.3);}
+  5%, 16% { background: #fa4b4b; }
+  21%, 32% { background: rgba(255, 194, 209, 0.3);}
+  37%, 48% { background: #fa4b4b; }
+  53%, 64% { background: rgba(255, 194, 209, 0.3);}
+  69%, 80% { background: #fa4b4b; }
+  85%, 100% { background: rgba(255, 194, 209, 0.3);}
+}
+
+@keyframes bordershrink {
+    100% {
+        width: 0;
+    }
+}
+
+
+@keyframes slideLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+#toastnotifications{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.toast{
+    background: rgba(255, 194, 209, 0.3);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    min-width: 400px;
+    font-size: 18px;
+    position: relative;
+    animation: slideLeft 0.5s ease forwards;
+    color: #fff;
+    overflow: hidden;
+}
+
+.toast i {
+    font-size: 28px;
+    color: #086108;
+    margin-right: 20px;
+}
+
+.toast.error i {
+    color: #be0707;
+}
+
+.toast.expired i{
+    color: #f0a716;
+}
+
+.toast:after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    border-radius: 1rem;
+    background: #086108;
+    animation: bordershrink 5s linear forwards;
+}
+
+.toast.error:after {
+    background: #be0707;
+}
+
+.toast.expired:after{
+    background: #f0a716;
 }

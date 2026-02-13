@@ -33,18 +33,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     forwardBtn.addEventListener("click", function() {
         event.preventDefault();
+        if(listArray.length === 1) {
+            return;
+        }
         taskList.innerHTML = "";
         getNextList();
         updateProgress();
         toggleEmptyState();
+        sortTableByColumn(document.querySelector("table"), 4, true)
     });
 
     backwardBtn.addEventListener("click", function() {
         event.preventDefault();
+        if(listArray.length === 1) {
+            return;
+        }
         taskList.innerHTML = "";
         getLastList();
         updateProgress();
         toggleEmptyState();
+        sortTableByColumn(document.querySelector("table"), 4, true)
     });
 
     toggleDarkModeBtn.addEventListener("click", function() {
@@ -68,6 +76,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function createNewList(table, nameLabel, name) {
     event.preventDefault();
+    if(!name) {
+        var input = document.getElementById("list-input")
+            input.style.animation = "blink 2s"
+            setTimeout(() => {
+                input.style.animation = "";
+            }, 1000);
+            showToastNotifications(`<i class="fa-solid fa-circle-exclamation"></i>Error: Failed to add new list`);
+            return;
+    }
     table.innerHTML = "";
     nameLabel.innerHTML = name;
     document.getElementById("list").style.display = "none";
@@ -165,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if(checkCompletion && totalTasks > 0 && completedTasks === totalTasks) {
             Confetti();
+            showToastNotifications(`<i class="fa-solid fa-circle-check"></i>All tasks are done`);
         };
     };
 
@@ -193,7 +211,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        savedData.forEach(({task, prio, due, completed}) => addTask(task, prio, due, completed, false));
+        savedData.forEach(({task, prio, due, completed}) => addTask(task, prio, due, completed, false))
+        findExpiredTasks(taskList);
+        updateProgress();
     }
 
     const addTask = (task, prio, due, completed = false) => {
@@ -203,6 +223,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = ViewName.innerText;
         if(!taskText)
         {
+            var input = document.getElementById("task-input")
+            input.style.animation = "blink 2s"
+            setTimeout(() => {
+                input.style.animation = "";
+            }, 1000);
+            showToastNotifications(`<i class="fa-solid fa-circle-exclamation"></i>Error: Can't add task`);
             return;
         };
 
@@ -259,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
         taskInput.value = "";
         document.getElementById("date").valueAsDate = new Date();
         toggleEmptyState();
-        updateProgress();
+        sortTableByColumn(document.querySelector("table"), 4, true)
         saveTaskToLocalStorage(file);
     };
 
@@ -276,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loadListsFromLocalStorage();
         const file = ViewName.innerText;
         loadTasksFromLocalStorage(file);
-        sortTableByColumn(document.querySelector("table"), 1, true)
+        sortTableByColumn(document.querySelector("table"), 4, true)
 })
 
 const Confetti = () => {
@@ -334,6 +360,12 @@ function exportTableAsCSV(filename) {
     let csv = [];
     const rows = table.querySelectorAll('tr');
 
+    if(rows.length < 1) {
+        showToastNotifications(`<i class="fa-solid fa-circle-exclamation"></i>Error: Export failed`);
+        document.getElementById("more").style.display = "none";
+        return;
+    }
+
     for (let i = 0; i < rows.length; i++) {
         const row = [], cols = rows[i].querySelectorAll("td");
         for (let j = 0; j < cols.length; j++) {
@@ -351,6 +383,8 @@ function exportTableAsCSV(filename) {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+    showToastNotifications(`<i class="fa-solid fa-circle-check"></i>List exported successfully<img src="">`);
+    document.getElementById("more").style.display = "none";
 }
 
 function sortTableByColumn(table, column, asc = true) {
@@ -359,8 +393,8 @@ function sortTableByColumn(table, column, asc = true) {
 
     //sort each row
     const sortedRows = rows.sort((a, b) => {
-        const aColText = a.querySelector(`td:nth-child(${column + 3})`).textContent.trim();
-        const bColText = b.querySelector(`td:nth-child(${column + 3})`).textContent.trim();
+        const aColText = a.querySelector(`td:nth-child(${column})`).textContent.trim();
+        const bColText = b.querySelector(`td:nth-child(${column})`).textContent.trim();
 
         return aColText > bColText ? (1* dirModifier) : (-1* dirModifier);
     });
@@ -383,4 +417,45 @@ function showMoreOptions() {
 function hideMoreOptions() {
     event.preventDefault();
     document.getElementById("more").style.display = "none";
+}
+
+const toastNotifications = document.querySelector("#toastnotifications");
+
+function showToastNotifications(message) {
+    let toast = document.createElement("div");
+    toast.classList.add("toast");
+    toast.innerHTML = message;
+    toastNotifications.appendChild(toast);
+
+    if(message.includes("Error")) {
+        toast.classList.add("error");
+    }
+
+    if(message.includes("expired")) {
+        toast.classList.add("expired");
+    }
+
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
+function findExpiredTasks(table) {
+    let expiredTasksArray = [];
+    var currentDate = document.getElementById("date").value;
+    const rows = table.querySelectorAll("tr");
+    const checkbox = document.querySelector(".checkbox");
+
+    rows.forEach(row => {
+        const dateCell = row.querySelector("td:nth-child(4)");
+        const value = dateCell.textContent;
+        if(currentDate > value) {
+            if(!checkbox.checked) {
+                expiredTasksArray.push(value);
+                console.log(expiredTasksArray);
+                var expiredTasks = expiredTasksArray.length;
+                showToastNotifications(`<i class="fa-solid fa-circle-exclamation"></i>You have ${expiredTasks} expired task(s) in this list`);
+            }
+        };
+    });
 }
